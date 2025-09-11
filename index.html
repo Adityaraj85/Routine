@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GATE CS 2026 - 6-Month Study Planner</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --current-highlight: rgba(52, 152, 219, 0.15);
+            --sidebar-width: 250px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+            color: #fff;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .current-time {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .main-container {
+            display: flex;
+            flex: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 20px;
+            gap: 20px;
+        }
+        
+        .sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .sidebar h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary);
+        }
+        
+        .week-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .week-btn {
+            padding: 12px 15px;
+            background-color: #f8f9fa;
+            border: none;
+            border-radius: 8px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+        
+        .week-btn:hover {
+            background-color: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .week-btn.active {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .week-btn i {
+            font-size: 1.2rem;
+        }
+        
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .card h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card h2 i {
+            color: var(--secondary);
+        }
+        
+        .current-week-display {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 10px;
+        }
+        
+        .routine-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            position: relative;
+        }
+        
+        .routine-table th, .routine-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+            position: relative;
+        }
+        
+        .routine-table th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .routine-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .routine-table tr:hover {
+            background-color: #f5f7fa;
+        }
+        
+        .routine-table tr.current-slot-row {
+            background-color: var(--current-highlight);
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+        }
+        
+        .routine-table tr.current-slot-row td {
+            font-weight: 600;
+        }
+        
+        .time-slot {
+            font-weight: 600;
+            color: var(--primary);
+            white-space: nowrap;
+        }
+        
+        .activity {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .instructions {
+            color: #546e7a;
+        }
+        
+        .timer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        
+        .current-slot {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .countdown {
+            font-size: 2rem;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+        
+        .progress-container {
+            margin: 25px 0;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            height: 12px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .alert-banner {
+            background-color: var(--warning);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.9; }
+            50% { opacity: 0.7; }
+            100% { opacity: 0.9; }
+        }
+        
+        .alert-banner i {
+            font-size: 1.5rem;
+        }
+        
+        .week-details {
+            overflow-x: auto;
+        }
+        
+        .week-table {
+            width: 100%;
+            min-width: 700px;
+            border-collapse: collapse;
+        }
+        
+        .week-table th, .week-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .week-table th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .week-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .week-table tr:hover {
+            background-color: #f5f7fa;
+        }
+        
+        .alarm-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            align-items: center;
+        }
+        
+        .alarm-btn {
+            padding: 8px 15px;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .alarm-btn:hover {
+            background-color: var(--primary);
+        }
+        
+        .alarm-btn.mute {
+            background-color: var(--accent);
+        }
+        
+        .alarm-status {
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+        
+        .mode-toggle {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .mode-text {
+            font-weight: 500;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--secondary);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: var(--dark);
+            color: white;
+            margin-top: 40px;
+        }
+        
+        @media (max-width: 992px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: static;
+            }
+            
+            .week-nav {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .week-btn {
+                flex: 1;
+                min-width: 120px;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+            
+            .current-time {
+                font-size: 1rem;
+            }
+            
+            .timer-container {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .routine-table, .week-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .routine-table th, .routine-table td,
+            .week-table th, .week-table td {
+                padding: 10px 8px;
+                font-size: 0.9rem;
+            }
+            
+            .countdown {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header-content {
+                padding: 10px;
+            }
+            
+            .logo h1 {
+                font-size: 1.3rem;
+            }
+            
+            .current-time {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .card {
+                padding: 15px;
+            }
+            
+            .current-week-display {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <h1>GATE CS 2026 Preparation Planner</h1>
+            </div>
+            <div class="current-time">
+                <i class="fas fa-clock"></i>
+                <span id="live-clock">00:00:00</span>
+                <span id="current-day">Monday</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <h2><i class="fas fa-calendar-alt"></i> Weekly Navigation</h2>
+            
+            <div class="mode-toggle">
+                <span class="mode-text">Auto Week Progression</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="auto-week-toggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <nav class="week-nav">
+                <button class="week-btn active" onclick="showWeek(1)">
+                    <i class="fas fa-flag"></i>Week 1
+                </button>
+                <button class="week-btn" onclick="showWeek(2)">
+                    <i class="fas fa-book"></i>Week 2
+                </button>
+                <button class="week-btn" onclick="showWeek(3)">
+                    <i class="fas fa-book"></i>Week 3
+                </button>
+                <button class="week-btn" onclick="showWeek(4)">
+                    <i class="fas fa-book"></i>Week 4
+                </button>
+                <button class="week-btn" onclick="showWeek(5)">
+                    <i class="fas fa-book"></i>Week 5
+                </button>
+                <button class="week-btn" onclick="showWeek(6)">
+                    <i class="fas fa-book"></i>Week 6
+                </button>
+                <button class="week-btn" onclick="showWeek(7)">
+                    <i class="fas fa-book"></i>Week 7
+                </button>
+                <button class="week-btn" onclick="showWeek(8)">
+                    <i class="fas fa-book"></i>Week 8
+                </button>
+                <button class="week-btn" onclick="showWeek(9)">
+                    <i class="fas fa-book"></i>Week 9
+                </button>
+                <button class="week-btn" onclick="showWeek(10)">
+                    <i class="fas fa-book"></i>Week 10
+                </button>
+                <button class="week-btn" onclick="showWeek(11)">
+                    <i class="fas fa-book"></i>Week 11
+                </button>
+                <button class="week-btn" onclick="showWeek(12)">
+                    <i class="fas fa-book"></i>Week 12
+                </button>
+                <button class="week-btn" onclick="showWeek(13)">
+                    <i class="fas fa-book"></i>Week 13
+                </button>
+                <button class="week-btn" onclick="showWeek(14)">
+                    <i class="fas fa-book"></i>Week 14
+                </button>
+                <button class="week-btn" onclick="showWeek(15)">
+                    <i class="fas fa-book"></i>Week 15
+                </button>
+                <button class="week-btn" onclick="showWeek(16)">
+                    <i class="fas fa-book"></i>Week 16
+                </button>
+                <button class="week-btn" onclick="showWeek(17)">
+                    <i class="fas fa-book"></i>Week 17
+                </button>
+                <button class="week-btn" onclick="showWeek(18)">
+                    <i class="fas fa-book"></i>Week 18
+                </button>
+                <button class="week-btn" onclick="showWeek(19)">
+                    <i class="fas fa-book"></i>Week 19
+                </button>
+                <button class="week-btn" onclick="showWeek(20)">
+                    <i class="fas fa-book"></i>Week 20
+                </button>
+                <button class="week-btn" onclick="showWeek(21)">
+                    <i class="fas fa-book"></i>Week 21
+                </button>
+                <button class="week-btn" onclick="showWeek(22)">
+                    <i class="fas fa-book"></i>Week 22
+                </button>
+                <button class="week-btn" onclick="showWeek(23)">
+                    <i class="fas fa-book"></i>Week 23
+                </button>
+                <button class="week-btn" onclick="showWeek(24)">
+                    <i class="fas fa-book"></i>Week 24
+                </button>
+                <button class="week-btn" onclick="showWeek(25)">
+                    <i class="fas fa-book"></i>Week 25
+                </button>
+                <button class="week-btn" onclick="showWeek(26)">
+                    <i class="fas fa-flag-checkered"></i>Week 26
+                </button>
+            </nav>
+            
+            <div class="progress-container">
+                <div class="progress-header">
+                    <span>Overall Progress</span>
+                    <span id="progress-percentage">3.8%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 3.8%;"></div>
+                </div>
+            </div>
+
+            <div class="alarm-controls">
+                <button id="alarm-toggle" class="alarm-btn">
+                    <i class="fas fa-bell"></i> Enable Alarms
+                </button>
+                <span id="alarm-status" class="alarm-status">Alarms off</span>
+            </div>
+        </aside>
+
+        <main class="content-area">
+            <div class="card">
+                <h2><i class="fas fa-list-alt"></i> Current Week Overview</h2>
+                <div class="current-week-display" id="current-week-display">
+                    Week 1: Foundation Building - Programming & Discrete Math
+                </div>
+                
+                <div class="alert-banner">
+                    <i class="fas fa-bell"></i>
+                    <div>Current slot: <strong>Study Slot 1 (Peak Focus)</strong> - Next change in: <span id="next-slot-countdown">02:15:33</span></div>
+                </div>
+                
+                <div class="timer-container">
+                    <div class="current-slot">
+                        <i class="fas fa-check-circle"></i> You should be studying: <strong>Math: Propositional Logic, Sets</strong>
+                    </div>
+                    <div class="countdown" id="slot-countdown">
+                        02:15:33
+                    </div>
+                </div>
+                
+                <h3>Daily Routine</h3>
+                <table class="routine-table">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Activity</th>
+                            <th>Detailed Instructions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="routine-body">
+                        <!-- Routine content will be dynamically generated -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-calendar-week"></i> <span id="week-detail-title">Week 1</span> Detailed Schedule</h2>
+                <div class="week-details">
+                    <table class="week-table">
+                        <thead>
+                            <tr>
+                                <th>Time Slot</th>
+                                <th>Subject Type</th>
+                                <th>Specific Topic</th>
+                                <th>Practice/Activity</th>
+                            </tr>
+                        </thead>
+                        <tbody id="week-details-body">
+                            <!-- Week details will be dynamically generated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>Stay disciplined, stay healthy, stay motivated, and conquer GATE 2026! You can do this.</p>
+        <p>© 2025 Aditya Raj GATE CS 2026 Preparation Planner</p>
+    </footer>
+
+    <!-- Hidden audio element for alarm sound -->
+    <audio id="alarm-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" type="audio/mpeg">
+    </audio>
+    
+    <script>
+        // Global variables
+        let currentWeek = 1;
+        let currentSlotIndex = -1;
+        let alarmsEnabled = false;
+        let autoWeekProgression = true;
+        let alarmSound = document.getElementById('alarm-sound');
+        let studyStartDate = new Date(); // Start from today
+        let slotCountdownInterval;
+
+        // Global variable to track the countdown (NEW)
+        let countdownInterval = null;
+        let currentSlotEndTime = null;
+        let remainingSeconds = 0;
+        
+        // Week-wise study plan data
+        const weekPlan = {
+            1: {
+                title: "Foundation Building - Programming & Discrete Math",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "Math: Propositional Logic, Sets", practice: "Understand basic operators and set theory" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "C Programming: Basics, Data Types, Operators", practice: "Write simple programs using operators" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "Data Structures: Arrays concepts", practice: "Understand declaration, initialization, memory allocation" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "Data Structures: Array problems", practice: "Solve problems: rotation, searching, insertion, deletion" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: Math (Logic, Sets), C Programming, Data Structures (Arrays)", practice: "" }
+                ]
+            },
+            2: {
+                title: "Core Programming & Math Fundamentals",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "Math: Relations, Functions", practice: "Understand properties and types of relations and functions" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "C Programming: Pointers, Functions", practice: "Write programs using pointers and functions" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "Data Structures: Stacks & Queues concepts", practice: "Understand operations and implementations" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "Data Structures: Implement Stack/Queue", practice: "Code implementations and solve related problems" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: Math (Relations, Functions), C Programming (Pointers), Data Structures (Stacks/Queues)", practice: "" }
+                ]
+            },
+            3: {
+                title: "Graph Theory and Recursion",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "Math: Graphs (basics, connectivity)", practice: "Understand graph terminology and connectivity concepts" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "C Programming: Recursion", practice: "Write recursive functions and solve problems" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "Data Structures: Linked Lists (SLL, DLL concepts)", practice: "Understand node structure and operations" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "Data Structures: LL insertion/deletion problems", practice: "Implement and solve linked list problems" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: Graph Theory, Recursion, Linked Lists", practice: "" }
+                ]
+            },
+            4: {
+                title: "Data Structures: Trees & Algorithms",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "Data Structures: Trees, BST concepts", practice: "Understand tree terminology and BST properties" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "Algorithms: Searching (Linear, Binary)", practice: "Implement and analyze searching algorithms" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "Algorithms: Sorting (Bubble, Selection, Insertion)", practice: "Understand sorting algorithms and their complexities" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "Algorithms: Code sorting algorithms", practice: "Implement sorting algorithms and test with various inputs" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: Trees, Searching, Sorting Algorithms", practice: "" }
+                ]
+            },
+            5: {
+                title: "Advanced Sorting & Combinatorics",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "Algorithms: Merge Sort, Quick Sort concepts", practice: "Understand divide and conquer approach" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "Algorithms: Solve complexity problems of sorts", practice: "Analyze time and space complexity of sorting algorithms" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "Math: Combinatorics (Counting)", practice: "Learn permutations, combinations, and counting principles" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "Algorithms: Code Merge/Quick sort", practice: "Implement advanced sorting algorithms" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: Advanced Sorting, Combinatorics", practice: "" }
+                ]
+            },
+            6: {
+                title: "Theory of Computation & Hashing",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "TOC: Finite Automata (DFA, NFA)", practice: "Understand automata theory and state machines" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "Algorithms: Hashing concepts", practice: "Learn hash functions and collision resolution" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "Algorithms: Practice Hashing problems", practice: "Solve problems related to hashing techniques" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "TOC: Practice drawing DFAs/NFAs for RE", practice: "Create automata for regular expressions" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: Automata Theory, Hashing", practice: "" }
+                ]
+            },
+            7: {
+                title: "Regular Expressions & Greedy Algorithms",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "TOC: Regular Expressions", practice: "Learn regex syntax and applications" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "Algorithms: Greedy Algorithms (Dijkstra concepts)", practice: "Understand greedy approach and Dijkstra's algorithm" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "Algorithms: Solve basic Greedy problems", practice: "Apply greedy techniques to solve problems" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "TOC: Convert NFA to DFA problems", practice: "Practice automata conversion techniques" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: Regular Expressions, Greedy Algorithms", practice: "" }
+                ]
+            },
+            8: {
+                title: "Dynamic Programming & Digital Logic",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "Algorithms: Dynamic Programming (Concepts)", practice: "Understand DP principles and memoization" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "Algorithms: DP problems (Fibonacci, LCS)", practice: "Solve classic DP problems" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "TOC: Context-Free Grammars", practice: "Learn CFG and parsing concepts" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "Digital Logic: Boolean Algebra, K-Maps", practice: "Simplify Boolean expressions using K-Maps" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: DP, CFG, Digital Logic Basics", practice: "" }
+                ]
+            },
+            9: {
+                title: "Digital Logic & Computer Organization",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "Digital Logic: Logic Gates, Minimization", practice: "Understand gate-level logic and minimization techniques" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "Digital Logic: Combinational Circuits (MUX)", practice: "Design and analyze combinational circuits" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "COA: Machine Instructions, Addressing Modes", practice: "Learn instruction formats and addressing techniques" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "Digital Logic: Circuit design problems", practice: "Design and solve circuit problems" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: Digital Logic, COA Basics", practice: "" }
+                ]
+            },
+            10: {
+                title: "Computer Architecture & Linear Algebra",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "COA: ALU, Data-path design", practice: "Understand arithmetic logic unit and data paths" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "COA: CPU Control Unit (Hardwired, Micro)", practice: "Learn control unit design approaches" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "Math: Linear Algebra (Matrices, Determinants)", practice: "Study matrix operations and properties" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "COA: Numerical on instruction execution", practice: "Solve problems related to instruction execution" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: COA, Linear Algebra", practice: "" }
+                ]
+            },
+            11: {
+                title: "Pipelining & Operating Systems",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "COA: Instruction Pipelining", practice: "Understand pipeline concepts and stages" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "COA: Pipeline Hazard problems", practice: "Identify and resolve pipeline hazards" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "OS: Processes, Threads", practice: "Learn process and thread management" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "Math: Linear Eq solving, Eigenvalues", practice: "Solve linear equations and find eigenvalues" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: Pipelining, OS Processes, Linear Algebra", practice: "" }
+                ]
+            },
+            12: {
+                title: "Process Scheduling & Synchronization",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "OS: Process Scheduling (Algos)", practice: "Learn CPU scheduling algorithms" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "OS: Scheduling numerical problems", practice: "Solve scheduling-related problems" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "OS: Synchronization (Semaphores)", practice: "Understand synchronization mechanisms" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "OS: Practice semaphore problems", practice: "Solve problems using semaphores" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: Process Scheduling, Synchronization", practice: "" }
+                ]
+            },
+            13: {
+                title: "Deadlocks & Database Systems",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "OS: Deadlocks", practice: "Learn deadlock detection and prevention" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "OS: Deadlock detection/prevention prob", practice: "Solve deadlock-related problems" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "DBMS: ER Model", practice: "Understand entity-relationship modeling" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "Math: Calculus (Limits, Continuity)", practice: "Solve calculus problems" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: Deadlocks, ER Model, Calculus", practice: "" }
+                ]
+            },
+            14: {
+                title: "Relational Model & Memory Management",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "DBMS: Relational Model, Algebra", practice: "Learn relational algebra operations" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "DBMS: Relational Algebra queries", practice: "Write and solve relational algebra queries" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "OS: Memory Management (Paging)", practice: "Understand paging and virtual memory" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "Math: Differentiation", practice: "Solve differentiation problems" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: Relational Model, Paging, Calculus", practice: "" }
+                ]
+            },
+            15: {
+                title: "SQL & Normalization",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "DBMS: SQL (DDL, DML)", practice: "Learn SQL syntax and commands" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "DBMS: Practice complex SQL queries", practice: "Write and execute complex SQL queries" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "DBMS: Normalization (1NF, 2NF)", practice: "Understand normalization forms" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "OS: Paging numerical problems", practice: "Solve paging-related problems" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: SQL, Normalization, Paging", practice: "" }
+                ]
+            },
+            16: {
+                title: "Advanced Normalization & Virtual Memory",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "DBMS: 3NF, BCNF", practice: "Learn higher normalization forms" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "DBMS: Normalization problems", practice: "Solve normalization problems" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "OS: Virtual Memory", practice: "Understand virtual memory concepts" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "Math: Integration", practice: "Solve integration problems" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: Normalization, Virtual Memory, Calculus", practice: "" }
+                ]
+            },
+            17: {
+                title: "Indexing & Computer Networks",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "DBMS: Indexing (B, B+ Trees)", practice: "Learn indexing techniques and tree structures" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "DBMS: Tree traversal problems", practice: "Solve tree traversal problems" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "CN: OSI/TCP-IP layers, Packet switching", practice: "Understand network layers and packet switching" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "OS: Virtual Memory numerical", practice: "Solve virtual memory problems" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: Indexing, Networks, Virtual Memory", practice: "" }
+                ]
+            },
+            18: {
+                title: "Data Link Layer & Probability",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "CN: Data Link Layer (Framing, Error Control)", practice: "Learn data link layer protocols" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "CN: Practice checksum/CRC problems", practice: "Solve error detection problems" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "Math: Probability (Random Variables)", practice: "Understand probability concepts and random variables" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "CN: Problems on error detection", practice: "Solve error detection and correction problems" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: Data Link Layer, Probability", practice: "" }
+                ]
+            },
+            19: {
+                title: "MAC Protocols & IP Addressing",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "CN: MAC Protocols, LANs (Ethernet)", practice: "Learn MAC protocols and LAN technologies" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "CN: Routing Algorithms (Concepts)", practice: "Understand routing algorithms" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "CN: IP Addressing (IPv4, Subnetting)", practice: "Learn IP addressing and subnetting" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "Math: Distributions (Binomial)", practice: "Solve binomial distribution problems" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: MAC Protocols, Routing, IP Addressing", practice: "" }
+                ]
+            },
+            20: {
+                title: "Compiler Design & Network Routing",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "Compiler Design: Lexical Analysis", practice: "Understand lexical analysis and tokenization" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "CN: Subnetting numerical problems", practice: "Solve subnetting problems" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "Compiler Design: Parsing (LL, LR)", practice: "Learn parsing techniques" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "CN: Routing problem analysis", practice: "Analyze and solve routing problems" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: Compiler Design, Network Routing", practice: "" }
+                ]
+            },
+            21: {
+                title: "Transport Layer & Compiler Design",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "CN: Transport Layer (TCP/UDP)", practice: "Understand transport layer protocols" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "CN: TCP Congestion Control", practice: "Learn TCP congestion control mechanisms" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "Compiler Design: Syntax-Directed Translation", practice: "Understand syntax-directed translation" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "Math: Distributions (Poisson, Normal)", practice: "Solve probability distribution problems" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: Transport Layer, Compiler Design, Probability", practice: "" }
+                ]
+            },
+            22: {
+                title: "Application Layer & Turing Machines",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "CN: Application Layer (DNS, HTTP, FTP)", practice: "Learn application layer protocols" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "TOC: Pumping Lemma for Regular Languages", practice: "Understand and apply pumping lemma" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "Compiler Design: Runtime Environment", practice: "Learn runtime environment management" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "CN: Problems on TCP/UDP", practice: "Solve transport layer problems" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: Application Layer, Pumping Lemma, Runtime Environment", practice: "" }
+                ]
+            },
+            23: {
+                title: "Turing Machines & Revision",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "TOC: Turing Machines, Undecidability", practice: "Understand Turing machines and undecidability" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "REVISION: Weak Areas from Mocks", practice: "Focus on weak areas identified in mock tests" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "REVISION: Weak Areas from Mocks", practice: "Focus on weak areas identified in mock tests" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "Full-Length Mock Test (on Sat)", practice: "Prepare for Saturday mock test" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: Turing Machines, Weak Areas", practice: "" }
+                ]
+            },
+            24: {
+                title: "Revision & Mock Tests",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "REVISION: Formulas & Concepts", practice: "Review important formulas and concepts" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "Mock Test Analysis & Revision", practice: "Analyze mock test results and revise weak areas" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "REVISION: Formulas & Concepts", practice: "Review important formulas and concepts" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "Full-Length Mock Test (on Sat)", practice: "Prepare for Saturday mock test" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: Key Concepts from Mock Tests", practice: "" }
+                ]
+            },
+            25: {
+                title: "Previous Year Questions Revision",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Theory-Heavy", topic: "REVISION: PYQs Only", practice: "Solve and analyze previous year questions" },
+                    { time: "9:30 - 11:30 AM", type: "Problem-Solving", topic: "Mock Test Analysis & Revision", practice: "Analyze mock test results and revise weak areas" },
+                    { time: "1:00 - 3:00 PM", type: "Conceptual", topic: "REVISION: PYQs Only", practice: "Solve and analyze previous year questions" },
+                    { time: "3:30 - 5:30 PM", type: "Practice", topic: "Full-Length Mock Test (on Sat)", practice: "Prepare for Saturday mock test" },
+                    { time: "6:00 - 7:30 PM", type: "Revision", topic: "REVISION: Important PYQs", practice: "" }
+                ]
+            },
+            26: {
+                title: "Final Revision & Test Practice",
+                schedule: [
+                    { time: "7:00 - 9:00 AM", type: "Revision", topic: "Short Notes Only", practice: "Review key formulas and concepts" },
+                    { time: "9:30 - 11:30 AM", type: "Mental Prep", topic: "Relax", practice: "Mental preparation and relaxation" },
+                    { time: "1:00 - 3:00 PM", type: "Revision", topic: "Short Notes Only", practice: "Final review of important topics" },
+                    { time: "3:30 - 5:30 PM", type: "Exam", topic: "Exam Day", practice: "Final exam preparation" },
+                    { time: "6:00 - 7:30 PM", type: "Rest", topic: "Complete Rest", practice: "Mental and physical relaxation" }
+                ]
+            }
+        };
+        
+        // Daily routine data
+        const dailyRoutine = [
+            { time: "5:30 AM", activity: "Wake Up", instructions: "<strong>Rule 1:</strong> Phone on <strong>DND</strong>. Traditional alarm. <strong>Action:</strong> Drink a large glass of water." },
+            { time: "5:30 - 6:00 AM", activity: "Light Exercise", instructions: "30 mins of yoga, stretching, or a brisk walk. <strong>Goal:</strong> Increase alertness. <strong>No phone.</strong>" },
+            { time: "6:00 - 6:30 AM", activity: "Freshen Up", instructions: "A cold shower helps significantly with waking up completely." },
+            { time: "6:30 - 7:00 AM", activity: "Breakfast & Meal Prep", instructions: "<strong>Breakfast:</strong> Oats with bananas/nuts OR 2 eggs with toast.<br><strong>Critical Meal Prep:</strong> While eating, soak lentils/beans. Chop all vegetables for the day." },
+            { time: "7:00 - 9:00 AM", activity: "Study Slot 1 (Peak Focus)", instructions: "<strong>Subject:</strong> As per weekly plan. <strong>Method:</strong> Learn NEW concepts. Understand theory. No solving yet." },
+            { time: "9:00 - 9:30 AM", activity: "Break & Snack", instructions: "<strong>Snack:</strong> Nuts, an apple, or a banana.<br><strong>Mobile Use:</strong> <strong>10 mins only.</strong> Urgent msgs/calls only. <strong>NO Social Media/News.</strong> Timer." },
+            { time: "9:30 - 11:30 AM", activity: "Study Slot 2 (Peak Focus)", instructions: "<strong>Subject:</strong> As per weekly plan. <strong>Method:</strong> Apply Slot 1 concepts. Start solving basic problems." },
+            { time: "11:30 AM - 12:00 PM", activity: "Lunch Prep & Cook", instructions: "Cook pre-soaked dal & pre-chopped veggies with rice/quinoa. <strong>Cook enough for dinner.</strong>" },
+            { time: "12:00 - 12:30 PM", activity: "Lunch", instructions: "<strong>Meal:</strong> Balanced plate (Carbs + Protein + Veggies). Eat mindfully. No studying." },
+            { time: "12:30 - 1:00 PM", activity: "Break", instructions: "Listen to music, tidy up. <strong>No phone.</strong>" },
+            { time: "1:00 - 3:00 PM", activity: "Study Slot 3 (Moderate Focus)", instructions: "<strong>Subject:</strong> As per weekly plan. <strong>Method:</strong> Read, make flashcards, draw diagrams." },
+            { time: "3:00 - 3:30 PM", activity: "Break & Snack", instructions: "<strong>Snack:</strong> Yogurt or a fruit. <strong>Power Nap (20 mins):</strong> Highly recommended. Set an alarm." },
+            { time: "3:30 - 5:30 PM", activity: "Study Slot 4 (Practice)", instructions: "<strong>Subject:</strong> As per weekly plan. <strong>Method:</strong> Solve numerical problems, design circuits, write code." },
+            { time: "5:30 - 6:00 PM", activity: "Break & Evening Walk", instructions: "Go for a walk outdoors. Get sunlight. Completely disconnect from studies." },
+            { time: "6:00 - 7:30 PM", activity: "Study Slot 5 (Revision)", instructions: "<strong>The MOST Important Slot.</strong> <strong>Activity:</strong> Revise EVERYTHING you studied from 7 AM to 5:30 PM. Solve 5-10 PYQs on those topics." },
+            { time: "7:30 - 8:15 PM", activity: "Dinner", instructions: "Reheat the lunch you prepared. Keep it light." },
+            { time: "8:15 - 9:00 PM", activity: "Free Time / Chores", instructions: "You've earned it. Shower, call family/friends, watch <strong>ONE</strong> episode of a light show." },
+            { time: "9:00 - 10:00 PM", activity: "Study Slot 6 (Light Admin)", instructions: "<strong>Activity:</strong> Organize your notes. <strong>Plan tomorrow's specific topics</strong> using the weekly guide below. Update tracker." },
+            { time: "10:00 - 10:30 PM", activity: "Wind Down", instructions: "<strong>Absolutely no screens.</strong> Read a physical book. Meditate. Plan grocery list." },
+            { time: "10:30 PM", activity: "Sleep", instructions: "<strong>7.5 hours of sleep is non-negotiable.</strong>" }
+        ];
+
+        // Saturday routine
+        const saturdayRoutine = [
+            { time: "7:30 AM", activity: "Wake Up & Light Breakfast", instructions: "Wake up a bit later to be rested. Have a light, familiar breakfast (same as what you plan to eat on exam day)." },
+            { time: "8:00 AM", activity: "Prepare for Exam Conditions", instructions: "Gather pens, admit card (simulated), water bottle. Ensure your room is quiet. Put phone on silent and in another room." },
+            { time: "8:30 AM", activity: "Full-Length Mock Test", instructions: "Start the 3-hour test exactly at 8:30 AM. Stick to the time strictly. Use only the allotted 3 hours." },
+            { time: "11:30 AM", activity: "Test Ends - Complete Break", instructions: "Stop writing immediately. Do NOT check answers. Go for a walk, have lunch, listen to music. Completely disconnect for 1.5 hours. Let your mind reset." },
+            { time: "1:00 PM", activity: "Lunch", instructions: "Have your pre-prepared lunch." },
+            { time: "1:30 PM", activity: "Mock Test Analysis (Phase 1: The Tally)", instructions: "Tools: Mock test, answer key, notebook dedicated to 'Error Analysis.'<br>Action:<br>1. Check answers and calculate your raw score.<br>2. Categorize every mistake:<br>- Silly Error: Knew the concept but made a calculation mistake or misread the question.<br>- Conceptual Gap: Didn't know the concept or forgot the formula.<br>- Unfamiliar Question: A new twist on a known concept you haven't seen before.<br>- Time Management: Ran out of time; couldn't attempt." },
+            { time: "3:30 PM", activity: "Break", instructions: "30-minute break." },
+            { time: "4:00 PM", activity: "Mock Test Analysis (Phase 2: The Deep Dive)", instructions: "Action:<br>1. For every Conceptual Gap and Unfamiliar Question, go back to your notes/textbook.<br>2. Re-learn that concept from scratch.<br>3. Solve 2-3 more problems on that same concept to solidify understanding.<br>4. Write these topics down in your 'Weak Topics List'." },
+            { time: "6:00 PM", activity: "Analysis Complete - Wind Down", instructions: "Stop studying. Your brain needs to process this." },
+            { time: "6:00 PM onwards", activity: "Free Time / Relax", instructions: "You have earned a serious break. Order food, watch a movie, play games, video call home. Do not feel guilty about relaxing." },
+            { time: "10:30 PM", activity: "Sleep", instructions: "" }
+        ];
+
+        // Sunday routine
+        const sundayRoutine = [
+            { time: "8:00 AM", activity: "Wake Up & Breakfast", instructions: "Enjoy a slow morning. No rush." },
+            { time: "9:00 AM", activity: "Targeted Revision", instructions: "Duration: 2-3 hours max.<br>Action: Take out your 'Weak Topics List' from Saturday's analysis.<br>- Revise the concepts you identified.<br>- Go through your short notes and formulas for those topics.<br>- Do NOT start learning anything new. This is only for revision." },
+            { time: "12:00 PM", activity: "Plan the Next Week", instructions: "Action:<br>1. Look at the Week-Wise Topic Breakdown table.<br>2. Plan the specific topics for each study slot for Monday-Friday of the coming week.<br>3. Make a grocery list for the week." },
+            { time: "1:00 PM", activity: "Lunch", instructions: "" },
+            { time: "2:00 PM", activity: "Complete Free Time / Hobbies", instructions: "This is mandatory. You must engage in non-academic activities. Examples:<br>- Watch a full movie or series episodes.<br>- Read a fiction book.<br>- Pursue a hobby (music, art, etc.).<br>- Clean your room/house.<br>- Explore your city.<br>- Nap without guilt." },
+            { time: "6:00 PM", activity: "Light Admin", instructions: "Tidy up your study space. Organize notes for Monday. Prepare your bag and clothes for the morning." },
+            { time: "7:00 PM", activity: "Dinner", instructions: "" },
+            { time: "8:00 PM", activity: "Relaxing Wind-Down", instructions: "Continue relaxing activities. Avoid stimulating content." },
+            { time: "10:30 PM", activity: "Sleep", instructions: "" }
+        ];
+
+        // Update live clock
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { hour12: false });
+            document.getElementById('live-clock').textContent = timeString;
+        
+        // Update day of the week
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            document.getElementById('current-day').textContent = days[now.getDay()];
+        
+        // Check if it's time to change week (every Monday)
+        if (autoWeekProgression) {
+            checkWeekProgression(now);
+        }
+            
+            // Update current slot highlighting
+            updateCurrentSlotHighlighting(now, true);
+            
+            return now;
+        }
+        
+        // Check if it's time to progress to the next week
+        function checkWeekProgression(now) {
+            const weeksSinceStart = Math.floor((now - studyStartDate) / (7 * 24 * 60 * 60 * 1000));
+            if (weeksSinceStart + 1 !== currentWeek && weeksSinceStart >= 0 && weeksSinceStart < 26) {
+                showWeek(weeksSinceStart + 1);
+            }
+        }
+        
+        // Update current slot highlighting based on current time
+    function updateCurrentSlotHighlighting(now, checkCountdown = false) {
+        const dayOfWeek = now.getDay();
+        let routineToUse = dailyRoutine;
+        
+        // Use different routine for weekends
+        if (dayOfWeek === 6) { // Saturday
+            routineToUse = saturdayRoutine;
+        } else if (dayOfWeek === 0) { // Sunday
+            routineToUse = sundayRoutine;
+        }
+        
+        // Update routine table based on day of week
+        updateRoutineTable(dayOfWeek);
+        
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+        const currentSecond = now.getSeconds();
+        const currentTimeInMinutes = currentHour * 60 + currentMinute;
+        const currentTimeInSeconds = currentTimeInMinutes * 60 + currentSecond;
+        
+        // Remove previous highlights
+        document.querySelectorAll('.current-slot-row').forEach(row => {
+            row.classList.remove('current-slot-row');
+        });
+        
+        // Find current time slot
+        let currentSlot = null;
+        let slotEndTimeInSeconds = 0;
+        
+        for (let i = 0; i < routineToUse.length; i++) {
+            const slot = routineToUse[i];
+            let startHour, startMinute, endHour, endMinute;
+            
+            if (slot.time.includes('-')) {
+                // Handle time ranges like "7:00 - 9:00 AM"
+                const [startTime, endTime] = slot.time.split(' - ');
+                
+                // Parse start time
+                const startParts = startTime.split(' ');
+                let startTimeParts = startParts[0].split(':');
+                startHour = parseInt(startTimeParts[0]);
+                startMinute = parseInt(startTimeParts[1] || 0);
+                
+                if (startParts.length > 1 && startParts[1] === 'PM' && startHour !== 12) {
+                    startHour += 12;
+                } else if (startParts.length > 1 && startParts[1] === 'AM' && startHour === 12) {
+                    startHour = 0;
+                }
+                
+                // Parse end time
+                const endParts = endTime.split(' ');
+                let endTimeParts = endParts[0].split(':');
+                endHour = parseInt(endTimeParts[0]);
+                endMinute = parseInt(endTimeParts[1] || 0);
+                
+                if (endParts.length > 1 && endParts[1] === 'PM' && endHour !== 12) {
+                    endHour += 12;
+                } else if (endParts.length > 1 && endParts[1] === 'AM' && endHour === 12) {
+                    endHour = 0;
+                }
+            } else {
+                // Handle single times like "5:30 AM"
+                const timeParts = slot.time.split(' ');
+                let timeValueParts = timeParts[0].split(':');
+                startHour = parseInt(timeValueParts[0]);
+                startMinute = parseInt(timeValueParts[1] || 0);
+                
+                if (timeParts.length > 1 && timeParts[1] === 'PM' && startHour !== 12) {
+                    startHour += 12;
+                } else if (timeParts.length > 1 && timeParts[1] === 'AM' && startHour === 12) {
+                    startHour = 0;
+                }
+                
+                // Assume 30 minutes duration for single time entries
+                endHour = startHour;
+                endMinute = startMinute + 30;
+                if (endMinute >= 60) {
+                    endHour += 1;
+                    endMinute -= 60;
+                }
+            }
+            
+            const slotStart = startHour * 60 + startMinute;
+            const slotEnd = endHour * 60 + endMinute;
+            const slotEndInSeconds = slotEnd * 60;
+            
+            if (currentTimeInMinutes >= slotStart && currentTimeInMinutes < slotEnd) {
+                currentSlot = { ...slot, row: i };
+                slotEndTimeInSeconds = slotEndInSeconds;
+                break;
+            }
+        }
+        
+        // Highlight current slot if found
+        if (currentSlot) {
+            const rows = document.querySelectorAll('.routine-table tbody tr');
+            if (rows[currentSlot.row]) {
+                rows[currentSlot.row].classList.add('current-slot-row');
+                
+                // Only update countdown if we're in a new slot or forced to
+                if (!checkCountdown || currentSlotEndTime !== slotEndTimeInSeconds) {
+                    currentSlotEndTime = slotEndTimeInSeconds;
+                    const secondsRemaining = slotEndTimeInSeconds - currentTimeInSeconds;
+                    updateSlotCountdown(secondsRemaining);
+                }
+                
+                // Update current activity display
+                updateCurrentActivity(currentSlot.activity, dayOfWeek);
+                
+                // Check if we need to trigger an alarm for study slots
+                if (alarmsEnabled && currentSlot.activity.includes("Study Slot")) {
+                    // Play alarm sound for study slots
+                    playAlarm();
+                }
+            }
+        }
+    }
+        
+        // Update the routine table based on day of week
+        function updateRoutineTable(dayOfWeek) {
+            const routineBody = document.getElementById('routine-body');
+            routineBody.innerHTML = '';
+            
+            let routineToUse = dailyRoutine;
+            
+            if (dayOfWeek === 6) { // Saturday
+                routineToUse = saturdayRoutine;
+            } else if (dayOfWeek === 0) { // Sunday
+                routineToUse = sundayRoutine;
+            }
+            
+            routineToUse.forEach(slot => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="time-slot">${slot.time}</td>
+                    <td class="activity">${slot.activity}</td>
+                    <td class="instructions">${slot.instructions}</td>
+                `;
+                routineBody.appendChild(row);
+            });
+        }
+        
+       // Update the countdown for the current slot
+    function updateSlotCountdown(secondsRemaining) {
+        // Clear any existing interval
+        if (countdownInterval) {
+            clearInterval(countdownInterval);
+        }
+        
+        remainingSeconds = secondsRemaining;
+        
+        // Update immediately
+        updateCountdownDisplay();
+        
+        // Set up interval to update every second
+        countdownInterval = setInterval(() => {
+            remainingSeconds--;
+            
+            if (remainingSeconds <= 0) {
+                clearInterval(countdownInterval);
+                // Refresh the current slot when countdown reaches zero
+                const now = new Date();
+                updateCurrentSlotHighlighting(now, false);
+            } else {
+                updateCountdownDisplay();
+            }
+        }, 1000);
+    }
+    
+    // Update the countdown display
+    function updateCountdownDisplay() {
+        const hours = Math.floor(remainingSeconds / 3600);
+        const minutes = Math.floor((remainingSeconds % 3600) / 60);
+        const seconds = remainingSeconds % 60;
+        
+        const countdownString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        document.getElementById('slot-countdown').textContent = countdownString;
+        document.getElementById('next-slot-countdown').textContent = countdownString;
+    }
+        
+        // Update the current activity display
+        function updateCurrentActivity(activityName, dayOfWeek) {
+            let studySubject = "";
+            
+            // Determine what should be studied based on current week and time slot
+            if (activityName.includes("Study Slot") && dayOfWeek >= 1 && dayOfWeek <= 5) {
+                // For Monday to Friday
+                const weekData = weekPlan[currentWeek];
+                if (weekData) {
+                    if (activityName.includes("Slot 1")) {
+                        studySubject = weekData.schedule[0].topic;
+                    } else if (activityName.includes("Slot 2")) {
+                        studySubject = weekData.schedule[1].topic;
+                    } else if (activityName.includes("Slot 3")) {
+                        studySubject = weekData.schedule[2].topic;
+                    } else if (activityName.includes("Slot 4")) {
+                        studySubject = weekData.schedule[3].topic;
+                    } else if (activityName.includes("Slot 5")) {
+                        studySubject = weekData.schedule[4].topic;
+                    } else if (activityName.includes("Slot 6")) {
+                        studySubject = "Plan tomorrow's study topics";
+                    }
+                }
+            } else if (dayOfWeek === 6) {
+                // For Saturday
+                if (activityName.includes("Mock Test")) {
+                    studySubject = "Full-Length Mock Test";
+                } else if (activityName.includes("Analysis")) {
+                    studySubject = "Mock Test Analysis";
+                }
+            } else if (dayOfWeek === 0) {
+                // For Sunday
+                if (activityName.includes("Revision")) {
+                    studySubject = "Weak Topics Revision";
+                } else if (activityName.includes("Plan")) {
+                    studySubject = "Weekly Planning";
+                }
+            }
+            
+            const activityElement = document.querySelector('.current-slot strong');
+            if (activityElement && studySubject) {
+                activityElement.textContent = studySubject;
+            }
+        }
+        
+        // Play alarm sound
+        function playAlarm() {
+            if (alarmsEnabled) {
+                alarmSound.currentTime = 0;
+                alarmSound.play().catch(e => {
+                    console.log("Audio play failed:", e);
+                });
+            }
+        }
+        
+        // Show a specific week's content
+        function showWeek(weekNumber) {
+            if (weekNumber < 1 || weekNumber > 26) return;
+            
+            currentWeek = weekNumber;
+            
+            // Update active button
+            document.querySelectorAll('.week-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.week-btn:nth-child(${weekNumber})`).classList.add('active');
+            
+            // Update week display
+            const weekData = weekPlan[weekNumber];
+            if (weekData) {
+                document.getElementById('current-week-display').textContent = `Week ${weekNumber}: ${weekData.title}`;
+                document.getElementById('week-detail-title').textContent = `Week ${weekNumber}`;
+            }
+            
+            // Update progress
+            const progressPercentage = ((weekNumber - 1) / 26 * 100).toFixed(1);
+            document.getElementById('progress-percentage').textContent = `${progressPercentage}%`;
+            document.querySelector('.progress').style.width = `${progressPercentage}%`;
+            
+            // Update week details table based on week number
+            updateWeekDetails(weekNumber);
+        }
+        
+        // Update the week details table based on the selected week
+        function updateWeekDetails(weekNumber) {
+            const weekDetailsBody = document.getElementById('week-details-body');
+            weekDetailsBody.innerHTML = ''; // Clear existing content
+            
+            const weekData = weekPlan[weekNumber];
+            if (weekData) {
+                weekData.schedule.forEach(slot => {
+                    const row = document.createElement('tr');
+                    if (slot.type === "Revision") {
+                        row.innerHTML = `
+                            <td class="time-slot">${slot.time}</td>
+                            <td colspan="3" style="text-align: center; font-weight: bold; color: var(--primary);">
+                                ${slot.topic}
+                            </td>
+                        `;
+                    } else {
+                        row.innerHTML = `
+                            <td class="time-slot">${slot.time}</td>
+                            <td>${slot.type}</td>
+                            <td>${slot.topic}</td>
+                            <td>${slot.practice}</td>
+                        `;
+                    }
+                    weekDetailsBody.appendChild(row);
+                });
+            } else {
+                // Placeholder for other weeks
+                const placeholderText = `Week ${weekNumber} detailed schedule will be displayed here. Check back soon for updates!`;
+                const row = document.createElement('tr');
+                row.innerHTML = `<td colspan="4" style="text-align: center; padding: 30px; color: #666;">${placeholderText}</td>`;
+                weekDetailsBody.appendChild(row);
+            }
+        }
+        
+        // Toggle alarm functionality
+        function toggleAlarms() {
+            alarmsEnabled = !alarmsEnabled;
+            const alarmBtn = document.getElementById('alarm-toggle');
+            const alarmStatus = document.getElementById('alarm-status');
+            
+            if (alarmsEnabled) {
+                alarmBtn.innerHTML = '<i class="fas fa-bell-slash"></i> Disable Alarms';
+                alarmBtn.classList.add('mute');
+                alarmStatus.textContent = 'Alarms on';
+                // Play a test sound
+                playAlarm();
+            } else {
+                alarmBtn.innerHTML = '<i class="fas fa-bell"></i> Enable Alarms';
+                alarmBtn.classList.remove('mute');
+                alarmStatus.textContent = 'Alarms off';
+                // Stop any playing alarm
+                alarmSound.pause();
+            }
+        }
+        
+        // Toggle auto week progression
+        function toggleAutoWeek() {
+            autoWeekProgression = !autoWeekProgression;
+            document.getElementById('auto-week-toggle').checked = autoWeekProgression;
+        }
+        
+        // Initialize the application
+        function initApp() {
+            // Set up event listeners
+            document.getElementById('alarm-toggle').addEventListener('click', toggleAlarms);
+            document.getElementById('auto-week-toggle').addEventListener('change', toggleAutoWeek);
+            
+            // Show initial week
+            showWeek(1);
+            
+            // Initialize routine table
+            const now = new Date();
+            updateRoutineTable(now.getDay());
+            
+            // Start clock and slot updater
+            updateClock();
+            setInterval(updateClock, 1000);
+            
+            // Initialize slot countdown
+            updateSlotCountdown(135); // Initial value of 2 hours 15 minutes
+        }
+        
+        // Start the application when the DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
